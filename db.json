@@ -34,6 +34,13 @@
       "age": "22",
       "address": "Quynh Phu",
       "career": "HR"
+    },
+    {
+      "id": "d27b",
+      "name": "Do Duong",
+      "age": "22",
+      "address": "Thai Binh",
+      "career": "Ky su"
     }
   ]
 }

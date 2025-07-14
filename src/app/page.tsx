@@ -1,8 +1,8 @@
 "use client";
 import UserModal from "@/components/userModal";
-import { useUsers } from "@/hooks/user";
-import { Button, Modal, Space, Table, TableProps, Tag } from "antd";
-import { FormProvider} from "react-hook-form";
+import { pagination, useUsers } from "@/hooks/user";
+import { Button, Modal, Pagination, Space, Table, TableProps, Tag } from "antd";
+import { FormProvider } from "react-hook-form";
 interface DataType {
   key?: string;
   name: string;
@@ -11,17 +11,9 @@ interface DataType {
   tags: string;
 }
 
-
-
 export default function Home() {
   const [
-    {
-      isLoading,
-      users,
-      methodForm,
-      isModalOpen,
-      isModalOpenDelete,
-    },
+    { isLoading, users, methodForm, isModalOpen, isModalOpenDelete, page },
     {
       setSelectedId,
       handleOpenModal,
@@ -30,8 +22,9 @@ export default function Home() {
       handleOk,
       handleConfirmDelete,
       handleCloseDeleteModal,
+      handleChangePage
     },
-  ] = useUsers()
+  ] = useUsers();
 
   const columns: TableProps<DataType>["columns"] = [
     {
@@ -85,6 +78,7 @@ export default function Home() {
       ),
     },
   ];
+  console.log(users);
 
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center bg-[#f5f5f5]">
@@ -97,8 +91,15 @@ export default function Home() {
           loading={isLoading}
           className="max-w-6xl"
           columns={columns}
-          dataSource={users}
+          dataSource={users.data}
           pagination={false}
+        />
+        <Pagination
+          current={page}
+          total={users.items}
+          defaultCurrent={1}
+          pageSize={pagination.limit}
+          onChange={(page) => handleChangePage(page)}
         />
       </div>
       <FormProvider {...methodForm}>

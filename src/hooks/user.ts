@@ -23,6 +23,7 @@ type UseUsersReturn = [
     methodForm: UseFormReturn<UserFormType>;
     isModalOpen: boolean;
     isModalOpenDelete: boolean;
+    page:number
   },
   {
     setSelectedId: (id: string) => void;
@@ -32,6 +33,7 @@ type UseUsersReturn = [
     handleOk: () => void;
     handleConfirmDelete: () => void;
     handleCloseDeleteModal: () => void;
+    handleChangePage:(page:number) => void
   }
 ];
 export const defaultUserValues = {
@@ -40,13 +42,22 @@ export const defaultUserValues = {
   career: "",
   address: "",
 };
+export const pagination = {
+  page: 1,
+  limit: 5,
+};
 export const useUsers = (): UseUsersReturn => {
   const [users, setUsers] = useState<User[] | []>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenDelete, setIsOpenDeleteModal] = useState(false);
   const [selectId, setSelectedId] = useState<string>("");
-
+  const [page, setPage] = useState(pagination.page);
+  const handleChangePage = (page:number) =>{
+    console.log('func run', page);
+    
+    setPage(page)
+  }
   const methodForm = useForm<UserFormType>({
     defaultValues: defaultUserValues,
   });
@@ -55,7 +66,7 @@ export const useUsers = (): UseUsersReturn => {
   const handleFetchUser = async () => {
     try {
       setIsLoading(true);
-      const results = await getUser();
+      const results = await getUser(page, pagination.limit);
       setUsers(results?.data);
       console.log(results);
     } catch (error) {
@@ -124,7 +135,7 @@ export const useUsers = (): UseUsersReturn => {
 
   useEffect(() => {
     handleFetchUser();
-  }, []);
+  }, [page]);
 
   return [
     {
@@ -133,6 +144,7 @@ export const useUsers = (): UseUsersReturn => {
       methodForm,
       isModalOpen,
       isModalOpenDelete,
+      page
     },
     {
       setSelectedId,
@@ -142,6 +154,7 @@ export const useUsers = (): UseUsersReturn => {
       handleOk,
       handleConfirmDelete,
       handleCloseDeleteModal,
+      handleChangePage
     },
   ];
 };
